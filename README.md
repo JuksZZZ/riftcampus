@@ -1,16 +1,121 @@
-# React + Vite
+# RiftCampus
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+RiftCampus es una aplicación web desarrollada a modo de proyecto para la materia Prácticas Profecinalizante II de la carrera TSAFI 2026 orientada a estudiantes que juegan League of Legends, cuyo objetivo es facilitar la formación de equipos mediante un sistema de matchmaking basado en compatibilidad entre jugadores.
 
-Currently, two official plugins are available:
+La plataforma conecta usuarios no solo por nivel de juego, sino también por rol, disponibilidad horaria y objetivos, permitiendo formar equipos más equilibrados y organizar partidas de manera eficiente.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Stack tecnológico
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* React + Vite
+* Tailwind CSS v4
+* PHP + Laravel 
+* MySQL
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## Estado del proyecto
+
+En desarrollo (MVP)
+
+Actualmente incluye:
+
+* Configuración inicial del proyecto con Vite
+* Integración de Tailwind CSS
+* Estructura base del frontend
+* Primeras interfaces en desarrollo
+
+---
+
+## Objetivos
+
+* Facilitar la búsqueda de compañeros de equipo
+* Formar equipos equilibrados según distintos criterios
+* Organizar partidas según disponibilidad horaria
+* Implementar un sistema de interacción tipo match
+
+---
+
+## Funcionalidades previstas
+
+* Registro e inicio de sesión
+* Creación y edición de perfil:
+
+  * Rol (Top, Jungle, Mid, ADC, Support)
+  * Rango
+  * Horarios disponibles
+* Visualización de otros jugadores
+* Sistema de compatibilidad
+* Sistema de match 
+* Sistema de reputación
+* Comentarios en perfiles
+
+---
+
+## Instalación local
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/JuksZZZ/riftcampus.git
+cd riftcampus
+```
+
+---
+
+### 2. Frontend
+
+```bash
+cd riftcampus
+npm install
+npm run dev
+```
+
+---
+
+### 3. Backend (Laravel)
+
+```bash
+cd backend
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan serve
+```
+
+---
+
+## Estructura del proyecto
+
+```
+riftcampus/
+├── riftcampus/   # Frontend (React)
+├── backend/      # Backend (Laravel)
+```
+
+---
+
+## Roadmap
+
+* Diseño de interfaces principales (match y perfiles)
+* Desarrollo del sistema de perfiles
+* Implementación del backend con Laravel
+* Sistema de autenticación
+* Sistema de matchmaking
+* Integración completa entre frontend y backend
+
+---
+
+## Autor
+
+Joaquin Uriel Kloster
+Estudiante y desarrollador Full Stack en desarrollo de este proyecto
+
+---
+
+## Licencia
+
+Este proyecto es de uso académico.
