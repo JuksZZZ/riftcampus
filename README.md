@@ -10,7 +10,7 @@ La plataforma conecta usuarios no solo por nivel de juego, sino también por rol
 
 * React + Vite
 * Tailwind CSS v4
-* PHP + Laravel 
+* PHP + Laravel '?' ... a definir
 * MySQL
 
 ---
@@ -75,7 +75,7 @@ npm run dev
 
 ---
 
-### 3. Backend (Laravel)
+### 3. Backend (Laravel?)
 
 ```bash
 cd backend
