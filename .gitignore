@@ -7,18 +7,41 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Node / Vite
+node_modules/
+dist/
+dist-ssr/
+.vite/
 *.local
+
+# Env files (MUY IMPORTANTE)
+.env
+.env.*
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Build / cache
+build/
+coverage/
+.cache/
+
+# Laravel 
+backend/vendor/
+backend/node_modules/
+backend/.env
+backend/storage/*.key
+backend/bootstrap/cache/*.php
+
+# Misc
+*.tmp
+*.temp
