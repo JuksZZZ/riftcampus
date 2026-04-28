@@ -6,7 +6,8 @@ export default function Home() {
           RiftCampus
         </h1>
         <p className="text-gray-400">
-          Plataforma en desarrollo
+          Coming Soon
+          
         </p>
 
         <button className="mt-6 px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-xl">
