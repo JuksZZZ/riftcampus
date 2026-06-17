@@ -1,0 +1,268 @@
+{
+  "info": {
+    "name": "RiftCampus API",
+    "description": "Colección completa de endpoints del backend de RiftCampus.\nBase URL: http://localhost:3000\n\nPara usar endpoints protegidos:\n1. Ejecutá POST /api/auth/login\n2. Copiá el token de la respuesta\n3. En cada request protegido, agregá el header:\n   Authorization: Bearer <token>",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:3000" },
+    { "key": "token",    "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Registrar usuario",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Faker\",\n  \"email\": \"faker@riftcampus.com\",\n  \"contrasena\": \"123456\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "201 Created",
+              "status": "Created",
+              "code": 201,
+              "body": "{\n  \"message\": \"Usuario registrado exitosamente.\",\n  \"token\": \"<jwt>\",\n  \"user\": {\n    \"id_usuario\": 1,\n    \"nombre\": \"Faker\",\n    \"email\": \"faker@riftcampus.com\",\n    \"rol_usuario\": \"usuario\"\n  }\n}"
+            },
+            {
+              "name": "400 Bad Request - Campos faltantes",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{ \"error\": \"Nombre, email y contraseña son obligatorios.\" }"
+            },
+            {
+              "name": "409 Conflict - Email duplicado",
+              "status": "Conflict",
+              "code": 409,
+              "body": "{ \"error\": \"Ya existe una cuenta con ese email.\" }"
+            }
+          ]
+        },
+        {
+          "name": "Iniciar sesión",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"faker@riftcampus.com\",\n  \"contrasena\": \"123456\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"token\": \"<jwt>\",\n  \"has_profile\": false,\n  \"user\": {\n    \"id_usuario\": 1,\n    \"nombre\": \"Faker\",\n    \"rol_usuario\": \"usuario\"\n  }\n}"
+            },
+            {
+              "name": "400 Bad Request - Campos faltantes",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{ \"error\": \"Email y contraseña son obligatorios.\" }"
+            },
+            {
+              "name": "401 Unauthorized - Credenciales incorrectas",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{ \"error\": \"Credenciales incorrectas.\" }"
+            }
+          ]
+        },
+        {
+          "name": "Obtener usuario actual (me)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/auth/me",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ]
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"user\": {\n    \"id_usuario\": 1,\n    \"nombre\": \"Faker\",\n    \"email\": \"faker@riftcampus.com\",\n    \"rol_usuario\": \"usuario\",\n    \"estado\": \"activo\",\n    \"summoner_name\": \"Faker KR\",\n    \"rango\": \"challenger\"\n  }\n}"
+            },
+            {
+              "name": "401 Unauthorized - Sin token",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{ \"error\": \"Token no proporcionado.\" }"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Perfil",
+      "item": [
+        {
+          "name": "Obtener mi perfil",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/perfil",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"perfil\": {\n    \"id_usuario\": 1,\n    \"nombre\": \"Faker\",\n    \"summoner_name\": \"Faker KR\",\n    \"rango\": \"challenger\",\n    \"roles_preferidos\": [\"mid\"],\n    \"objetivo\": \"competitivo\",\n    \"puntos_reputacion\": 0\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Obtener perfil por ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/perfil/1",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          },
+          "response": [
+            {
+              "name": "200 OK", "status": "OK", "code": 200,
+              "body": "{ \"perfil\": { ... } }"
+            },
+            {
+              "name": "404 Not Found",
+              "status": "Not Found", "code": 404,
+              "body": "{ \"error\": \"Usuario no encontrado.\" }"
+            }
+          ]
+        },
+        {
+          "name": "Crear / actualizar perfil",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/perfil",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "summoner_name",    "value": "Faker KR",          "type": "text" },
+                { "key": "rango",            "value": "challenger",        "type": "text" },
+                { "key": "objetivo",         "value": "competitivo",       "type": "text" },
+                { "key": "roles_preferidos", "value": "[\"mid\"]",         "type": "text" },
+                { "key": "descripcion",      "value": "Main mid one-trick","type": "text" },
+                { "key": "avatar",           "type": "file",               "src": "" }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK", "status": "OK", "code": 200,
+              "body": "{ \"message\": \"Perfil guardado correctamente.\", \"perfil\": { ... } }"
+            },
+            {
+              "name": "400 Bad Request",
+              "status": "Bad Request", "code": 400,
+              "body": "{ \"error\": \"Summoner name, rango y objetivo son obligatorios.\" }"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Swipe",
+      "item": [
+        {
+          "name": "Obtener candidatos (paginado)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/swipe/candidatos?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api","swipe","candidatos"],
+              "query": [
+                { "key": "page",     "value": "1" },
+                { "key": "limit",    "value": "10" },
+                { "key": "rango",    "value": "",  "disabled": true },
+                { "key": "rol",      "value": "",  "disabled": true },
+                { "key": "objetivo", "value": "",  "disabled": true }
+              ]
+            },
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          },
+          "response": [
+            {
+              "name": "200 OK con paginación",
+              "status": "OK", "code": 200,
+              "body": "{\n  \"candidatos\": [\n    {\n      \"id_usuario\": 2,\n      \"summoner_name\": \"Caps EU\",\n      \"rango\": \"diamante\",\n      \"roles_preferidos\": [\"mid\",\"top\"],\n      \"objetivo\": \"rankear\",\n      \"compatibilidad\": 78\n    }\n  ],\n  \"paginacion\": {\n    \"total\": 24,\n    \"pagina_actual\": 1,\n    \"paginas_totales\": 3,\n    \"por_pagina\": 10\n  }\n}"
+            },
+            {
+              "name": "400 Sin perfil",
+              "status": "Bad Request", "code": 400,
+              "body": "{ \"error\": \"Completá tu perfil antes de explorar.\" }"
+            },
+            {
+              "name": "401 Sin token",
+              "status": "Unauthorized", "code": 401,
+              "body": "{ \"error\": \"Token no proporcionado.\" }"
+            }
+          ]
+        },
+        {
+          "name": "Registrar swipe (like/dislike)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/swipe",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_swiped\": 2,\n  \"accion\": \"like\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK - Sin match",
+              "status": "OK", "code": 200,
+              "body": "{ \"ok\": true, \"es_match\": false }"
+            },
+            {
+              "name": "200 OK - ¡Match mutuo!",
+              "status": "OK", "code": 200,
+              "body": "{\n  \"ok\": true,\n  \"es_match\": true,\n  \"match\": {\n    \"nombre\": \"Caps\",\n    \"summoner_name\": \"Caps EU\",\n    \"rango\": \"diamante\",\n    \"compatibilidad\": 78\n  }\n}"
+            },
+            {
+              "name": "400 Bad Request",
+              "status": "Bad Request", "code": 400,
+              "body": "{ \"error\": \"id_swiped y accion son obligatorios.\" }"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Verificar estado del servidor",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/health"
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK", "code": 200,
+              "body": "{ \"status\": \"ok\" }"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
