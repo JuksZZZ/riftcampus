@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth.js'
 import api from '../services/api.js'
+import DisponibilidadEditor from '../components/DisponibilidadEditor.vue'
 
 const auth = useAuthStore()
 
@@ -263,6 +264,9 @@ async function handleSave() {
             <span v-if="saving" class="spinner" />
             <span v-else>💾 Guardar perfil</span>
           </button>
+
+          <div class="divider" />
+          <DisponibilidadEditor />
 
         </div>
       </div>
@@ -561,4 +565,10 @@ async function handleSave() {
   animation: spin 0.7s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+.divider {
+  height: 1px;
+  background: var(--border-dim);
+  margin: 8px 0;
+}
 </style>
