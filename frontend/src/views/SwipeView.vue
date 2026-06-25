@@ -244,6 +244,18 @@ function rangoLabel(r) {
                 >{{ rol }}</span>
               </div>
 
+              <!-- Horarios -->
+              <div v-if="jugadorActual.disponibilidad?.length" class="card-horarios">
+                <div
+                  v-for="f in jugadorActual.disponibilidad"
+                  :key="f.dia + f.hora_inicio"
+                  class="horario-chip"
+                >
+                  <span class="horario-dia">{{ f.dia.toUpperCase() }}</span>
+                  <span class="horario-horas">{{ f.hora_inicio.slice(0,5) }} – {{ f.hora_fin.slice(0,5) }}</span>
+                </div>
+              </div>
+
               <p v-if="jugadorActual.descripcion" class="card-desc">
                 {{ jugadorActual.descripcion }}
               </p>
@@ -354,6 +366,17 @@ function rangoLabel(r) {
               <div class="jcard-roles">
                 <span v-for="rol in jugador.roles_preferidos" :key="rol" class="rol-chip-sm">
                   {{ rol }}
+                </span>
+              </div>
+
+              <div v-if="jugador.disponibilidad?.length" class="jcard-horarios">
+                <span
+                  v-for="f in jugador.disponibilidad.slice(0,3)"
+                  :key="f.dia"
+                  class="horario-chip-sm"
+                >{{ f.dia.toUpperCase() }} {{ f.hora_inicio.slice(0,5) }}–{{ f.hora_fin.slice(0,5) }}</span>
+                <span v-if="jugador.disponibilidad.length > 3" class="horario-chip-sm muted">
+                  +{{ jugador.disponibilidad.length - 3 }} más
                 </span>
               </div>
             </div>
@@ -730,6 +753,7 @@ function rangoLabel(r) {
   border: 1px solid var(--border-dim);
   color: var(--text-muted);
   text-transform: capitalize;
+  
 }
 
 .jcard-acciones {
@@ -879,4 +903,35 @@ function rangoLabel(r) {
 @keyframes spin { to { transform: rotate(360deg); } }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.25s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
+
+.card-horarios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 4px;
+}
+.horario-chip {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-dim);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 11px;
+}
+.horario-dia  { color: var(--blue); font-weight: 700; }
+.horario-horas { color: var(--text-secondary); }
+
+.jcard-horarios { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.horario-chip-sm {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-dim);
+  color: var(--text-secondary);
+}
+.horario-chip-sm.muted { color: var(--text-muted); }
 </style>

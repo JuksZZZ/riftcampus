@@ -61,6 +61,7 @@ export async function getCandidatos(userId, { rango, rol, objetivo, page = 1, li
     return {
       ...c,
       roles_preferidos: JSON.parse(c.roles_preferidos || '[]'),
+      disponibilidad: suDisp,
       compatibilidad: calcularCompatibilidad(miPerfil[0], c, miDisp, suDisp)
     }
   }))

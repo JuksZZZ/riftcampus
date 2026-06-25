@@ -6,7 +6,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/login'
+      name: 'Landing',
+      component: () => import('../views/LandingView.vue'),
     },
     {
       path: '/login',
@@ -25,7 +26,7 @@ const router = createRouter({
       component: () => import('../views/AppLayout.vue'),
       meta: { requiresAuth: true },
       children: [
-        { path: '', redirect: '/app/swipe' },
+        { path: '',            redirect: '/app/swipe' },
         { path: 'swipe',       name: 'Swipe',       component: () => import('../views/SwipeView.vue') },
         { path: 'matches',     name: 'Matches',     component: () => import('../views/MatchesView.vue') },
         { path: 'teams',       name: 'Teams',       component: () => import('../views/TeamsView.vue') },
@@ -33,7 +34,11 @@ const router = createRouter({
         { path: 'profile',     name: 'Profile',     component: () => import('../views/ProfileView.vue') },
       ]
     }
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition
+    return { top: 0, behavior: 'smooth' }
+  }
 })
 
 router.beforeEach((to, from, next) => {
