@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "RiftCampus API",
-    "description": "Colección completa de endpoints del backend de RiftCampus.\nBase URL: http://localhost:3000\n\nPara usar endpoints protegidos:\n1. Ejecutá POST /api/auth/login\n2. Copiá el token de la respuesta\n3. En cada request protegido, agregá el header:\n   Authorization: Bearer <token>",
+    "description": "Colección completa de endpoints del backend de RiftCampus.\nBase URL: http://localhost:3000\n\nPara usar endpoints protegidos:\n1. Ejecutá POST /api/auth/login\n2. Copiá el token de la respuesta\n3. En cada request protegido, agregá el header:\n   Authorization: Bearer <token>\n\nPara la defensa: simular ataque de token editando manualmente el valor de {{token}}.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -97,6 +97,12 @@
               "status": "Unauthorized",
               "code": 401,
               "body": "{ \"error\": \"Token no proporcionado.\" }"
+            },
+            {
+              "name": "401 Unauthorized - Token manipulado",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{ \"error\": \"Token inválido o expirado.\" }"
             }
           ]
         }
@@ -118,6 +124,12 @@
               "status": "OK",
               "code": 200,
               "body": "{\n  \"perfil\": {\n    \"id_usuario\": 1,\n    \"nombre\": \"Faker\",\n    \"summoner_name\": \"Faker KR\",\n    \"rango\": \"challenger\",\n    \"roles_preferidos\": [\"mid\"],\n    \"objetivo\": \"competitivo\",\n    \"puntos_reputacion\": 0\n  }\n}"
+            },
+            {
+              "name": "401 Unauthorized - Sin token",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{ \"error\": \"Token no proporcionado.\" }"
             }
           ]
         },
@@ -130,12 +142,15 @@
           },
           "response": [
             {
-              "name": "200 OK", "status": "OK", "code": 200,
-              "body": "{ \"perfil\": { ... } }"
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"perfil\": {\n    \"id_usuario\": 1,\n    \"nombre\": \"Faker\",\n    \"summoner_name\": \"Faker KR\",\n    \"rango\": \"challenger\",\n    \"roles_preferidos\": [\"mid\"],\n    \"objetivo\": \"competitivo\"\n  }\n}"
             },
             {
-              "name": "404 Not Found",
-              "status": "Not Found", "code": 404,
+              "name": "404 Not Found - ID inexistente",
+              "status": "Not Found",
+              "code": 404,
               "body": "{ \"error\": \"Usuario no encontrado.\" }"
             }
           ]
@@ -149,24 +164,33 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "summoner_name",    "value": "Faker KR",          "type": "text" },
-                { "key": "rango",            "value": "challenger",        "type": "text" },
-                { "key": "objetivo",         "value": "competitivo",       "type": "text" },
-                { "key": "roles_preferidos", "value": "[\"mid\"]",         "type": "text" },
-                { "key": "descripcion",      "value": "Main mid one-trick","type": "text" },
-                { "key": "avatar",           "type": "file",               "src": "" }
+                { "key": "summoner_name",    "value": "Faker KR",           "type": "text" },
+                { "key": "rango",            "value": "challenger",         "type": "text" },
+                { "key": "objetivo",         "value": "competitivo",        "type": "text" },
+                { "key": "roles_preferidos", "value": "[\"mid\"]",          "type": "text" },
+                { "key": "descripcion",      "value": "Main mid one-trick", "type": "text" },
+                { "key": "avatar",           "type": "file", "src": "" }
               ]
             }
           },
           "response": [
             {
-              "name": "200 OK", "status": "OK", "code": 200,
-              "body": "{ \"message\": \"Perfil guardado correctamente.\", \"perfil\": { ... } }"
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{ \"message\": \"Perfil guardado correctamente.\", \"perfil\": { \"summoner_name\": \"Faker KR\", \"rango\": \"challenger\" } }"
             },
             {
-              "name": "400 Bad Request",
-              "status": "Bad Request", "code": 400,
+              "name": "400 Bad Request - Campos obligatorios faltantes",
+              "status": "Bad Request",
+              "code": 400,
               "body": "{ \"error\": \"Summoner name, rango y objetivo son obligatorios.\" }"
+            },
+            {
+              "name": "400 Bad Request - Rango inválido",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{ \"error\": \"Rango inválido.\" }"
             }
           ]
         }
@@ -176,37 +200,40 @@
       "name": "Swipe",
       "item": [
         {
-          "name": "Obtener candidatos (paginado)",
+          "name": "Obtener candidatos (paginado + filtros)",
           "request": {
             "method": "GET",
             "url": {
               "raw": "{{base_url}}/api/swipe/candidatos?page=1&limit=10",
               "host": ["{{base_url}}"],
-              "path": ["api","swipe","candidatos"],
+              "path": ["api", "swipe", "candidatos"],
               "query": [
                 { "key": "page",     "value": "1" },
                 { "key": "limit",    "value": "10" },
-                { "key": "rango",    "value": "",  "disabled": true },
-                { "key": "rol",      "value": "",  "disabled": true },
-                { "key": "objetivo", "value": "",  "disabled": true }
+                { "key": "rango",    "value": "oro",          "disabled": true },
+                { "key": "rol",      "value": "mid",          "disabled": true },
+                { "key": "objetivo", "value": "competitivo",  "disabled": true }
               ]
             },
             "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
           },
           "response": [
             {
-              "name": "200 OK con paginación",
-              "status": "OK", "code": 200,
-              "body": "{\n  \"candidatos\": [\n    {\n      \"id_usuario\": 2,\n      \"summoner_name\": \"Caps EU\",\n      \"rango\": \"diamante\",\n      \"roles_preferidos\": [\"mid\",\"top\"],\n      \"objetivo\": \"rankear\",\n      \"compatibilidad\": 78\n    }\n  ],\n  \"paginacion\": {\n    \"total\": 24,\n    \"pagina_actual\": 1,\n    \"paginas_totales\": 3,\n    \"por_pagina\": 10\n  }\n}"
+              "name": "200 OK - Lista paginada con compatibilidad",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"candidatos\": [\n    {\n      \"id_usuario\": 2,\n      \"summoner_name\": \"Caps EU\",\n      \"rango\": \"diamante\",\n      \"roles_preferidos\": [\"mid\", \"top\"],\n      \"objetivo\": \"rankear\",\n      \"compatibilidad\": 78\n    }\n  ],\n  \"paginacion\": {\n    \"total\": 24,\n    \"pagina_actual\": 1,\n    \"paginas_totales\": 3,\n    \"por_pagina\": 10\n  }\n}"
             },
             {
-              "name": "400 Sin perfil",
-              "status": "Bad Request", "code": 400,
+              "name": "400 Bad Request - Sin perfil completado",
+              "status": "Bad Request",
+              "code": 400,
               "body": "{ \"error\": \"Completá tu perfil antes de explorar.\" }"
             },
             {
-              "name": "401 Sin token",
-              "status": "Unauthorized", "code": 401,
+              "name": "401 Unauthorized - Sin token",
+              "status": "Unauthorized",
+              "code": 401,
               "body": "{ \"error\": \"Token no proporcionado.\" }"
             }
           ]
@@ -227,18 +254,309 @@
           },
           "response": [
             {
-              "name": "200 OK - Sin match",
-              "status": "OK", "code": 200,
+              "name": "200 OK - Sin match todavía",
+              "status": "OK",
+              "code": 200,
               "body": "{ \"ok\": true, \"es_match\": false }"
             },
             {
               "name": "200 OK - ¡Match mutuo!",
-              "status": "OK", "code": 200,
+              "status": "OK",
+              "code": 200,
               "body": "{\n  \"ok\": true,\n  \"es_match\": true,\n  \"match\": {\n    \"nombre\": \"Caps\",\n    \"summoner_name\": \"Caps EU\",\n    \"rango\": \"diamante\",\n    \"compatibilidad\": 78\n  }\n}"
             },
             {
-              "name": "400 Bad Request",
-              "status": "Bad Request", "code": 400,
+              "name": "400 Bad Request - Campos faltantes",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{ \"error\": \"id_swiped y accion son obligatorios.\" }"
+            },
+            {
+              "name": "400 Bad Request - Acción inválida",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{ \"error\": \"La acción debe ser \\\"like\\\" o \\\"dislike\\\".\" }"
+            },
+            {
+              "name": "400 Bad Request - Auto-swipe",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{ \"error\": \"No podés swipearte a vos mismo.\" }"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Matches",
+      "item": [
+        {
+          "name": "Listar mis matches (paginado)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/matches?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "matches"],
+              "query": [
+                { "key": "page",  "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          },
+          "response": [
+            {
+              "name": "200 OK - Lista paginada de matches",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"matches\": [\n    {\n      \"id_match\": 1,\n      \"compatibilidad\": 78,\n      \"fecha\": \"2026-06-20T18:30:00.000Z\",\n      \"estado\": \"activo\",\n      \"id_otro\": 3,\n      \"nombre\": \"Caps\",\n      \"summoner_name\": \"Caps EU\",\n      \"rango\": \"diamante\",\n      \"roles_preferidos\": [\"mid\", \"top\"],\n      \"avatar_url\": \"/uploads/avatars/avatar-3.png\",\n      \"objetivo\": \"rankear\"\n    }\n  ],\n  \"paginacion\": {\n    \"total\": 5,\n    \"pagina_actual\": 1,\n    \"paginas_totales\": 1,\n    \"por_pagina\": 10\n  }\n}"
+            },
+            {
+              "name": "200 OK - Sin matches aún",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"matches\": [],\n  \"paginacion\": {\n    \"total\": 0,\n    \"pagina_actual\": 1,\n    \"paginas_totales\": 0,\n    \"por_pagina\": 10\n  }\n}"
+            },
+            {
+              "name": "401 Unauthorized - Sin token",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{ \"error\": \"Token no proporcionado.\" }"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Leaderboard",
+      "item": [
+        {
+          "name": "Obtener ranking (paginado)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/leaderboard?page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "leaderboard"],
+              "query": [
+                { "key": "page",  "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            },
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          },
+          "response": [
+            {
+              "name": "200 OK - Tabla de ranking con posición",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"ranking\": [\n    {\n      \"posicion\": 1,\n      \"id_usuario\": 5,\n      \"nombre\": \"Faker\",\n      \"summoner_name\": \"Faker KR\",\n      \"rango\": \"challenger\",\n      \"puntos_reputacion\": 1500,\n      \"promedio_resenas\": 4.9,\n      \"partidas_jugadas\": 320,\n      \"roles_preferidos\": [\"mid\"]\n    },\n    {\n      \"posicion\": 2,\n      \"id_usuario\": 3,\n      \"nombre\": \"Caps\",\n      \"summoner_name\": \"Caps EU\",\n      \"rango\": \"gran_maestro\",\n      \"puntos_reputacion\": 1200,\n      \"promedio_resenas\": 4.7,\n      \"partidas_jugadas\": 210\n    }\n  ],\n  \"paginacion\": {\n    \"total\": 42,\n    \"pagina_actual\": 1,\n    \"paginas_totales\": 5,\n    \"por_pagina\": 10\n  }\n}"
+            },
+            {
+              "name": "401 Unauthorized - Sin token",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{ \"error\": \"Token no proporcionado.\" }"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Disponibilidad",
+      "item": [
+        {
+          "name": "Obtener mi disponibilidad",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/disponibilidad",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          },
+          "response": [
+            {
+              "name": "200 OK - Franjas horarias del usuario",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"disponibilidad\": [\n    { \"id_disponibilidad\": 1, \"dia\": \"lun\", \"hora_inicio\": \"18:00:00\", \"hora_fin\": \"22:00:00\" },\n    { \"id_disponibilidad\": 2, \"dia\": \"mie\", \"hora_inicio\": \"20:00:00\", \"hora_fin\": \"23:00:00\" },\n    { \"id_disponibilidad\": 3, \"dia\": \"sab\", \"hora_inicio\": \"14:00:00\", \"hora_fin\": \"20:00:00\" }\n  ]\n}"
+            },
+            {
+              "name": "200 OK - Sin disponibilidad cargada",
+              "status": "OK",
+              "code": 200,
+              "body": "{ \"disponibilidad\": [] }"
+            },
+            {
+              "name": "401 Unauthorized - Sin token",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{ \"error\": \"Token no proporcionado.\" }"
+            }
+          ]
+        },
+        {
+          "name": "Obtener disponibilidad de otro usuario",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/disponibilidad/2",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"disponibilidad\": [\n    { \"id_disponibilidad\": 4, \"dia\": \"vie\", \"hora_inicio\": \"19:00:00\", \"hora_fin\": \"23:00:00\" }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Guardar disponibilidad",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/disponibilidad",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"franjas\": [\n    { \"dia\": \"lun\", \"hora_inicio\": \"18:00\", \"hora_fin\": \"22:00\" },\n    { \"dia\": \"mie\", \"hora_inicio\": \"20:00\", \"hora_fin\": \"23:00\" },\n    { \"dia\": \"sab\", \"hora_inicio\": \"14:00\", \"hora_fin\": \"20:00\" }\n  ]\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "200 OK - Disponibilidad guardada",
+              "status": "OK",
+              "code": 200,
+              "body": "{\n  \"message\": \"Disponibilidad guardada correctamente.\",\n  \"disponibilidad\": [\n    { \"id_disponibilidad\": 1, \"dia\": \"lun\", \"hora_inicio\": \"18:00:00\", \"hora_fin\": \"22:00:00\" },\n    { \"id_disponibilidad\": 2, \"dia\": \"mie\", \"hora_inicio\": \"20:00:00\", \"hora_fin\": \"23:00:00\" },\n    { \"id_disponibilidad\": 3, \"dia\": \"sab\", \"hora_inicio\": \"14:00:00\", \"hora_fin\": \"20:00:00\" }\n  ]\n}"
+            },
+            {
+              "name": "200 OK - Borrar toda la disponibilidad",
+              "status": "OK",
+              "code": 200,
+              "body": "{ \"message\": \"Disponibilidad guardada correctamente.\", \"disponibilidad\": [] }"
+            },
+            {
+              "name": "400 Bad Request - Franjas no es array",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{ \"error\": \"El campo \\\"franjas\\\" debe ser un array.\" }"
+            },
+            {
+              "name": "400 Bad Request - Día inválido",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{ \"error\": \"Día inválido: dom2\" }"
+            },
+            {
+              "name": "400 Bad Request - hora_fin anterior a hora_inicio",
+              "status": "Bad Request",
+              "code": 400,
+              "body": "{ \"error\": \"hora_fin debe ser posterior a hora_inicio (lun).\" }"
+            },
+            {
+              "name": "401 Unauthorized - Sin token",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{ \"error\": \"Token no proporcionado.\" }"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "🔴 Seguridad - Ataques para defensa",
+      "item": [
+        {
+          "name": "[ATAQUE] Sin token en ruta protegida",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/perfil",
+            "header": []
+          },
+          "response": [
+            {
+              "name": "401 Unauthorized - Sin header Authorization",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{ \"error\": \"Token no proporcionado.\" }"
+            }
+          ]
+        },
+        {
+          "name": "[ATAQUE] Token manipulado / firma inválida",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/perfil",
+            "header": [
+              { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbCI6ImFkbWluIn0.FIRMA_FALSA_MANIPULADA" }
+            ]
+          },
+          "response": [
+            {
+              "name": "401 Unauthorized - Firma JWT inválida",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{ \"error\": \"Token inválido o expirado.\" }"
+            }
+          ]
+        },
+        {
+          "name": "[ATAQUE] Perfil con ID inexistente (404)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/perfil/99999",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }]
+          },
+          "response": [
+            {
+              "name": "404 Not Found - ID no existe en la base de datos",
+              "status": "Not Found",
+              "code": 404,
+              "body": "{ \"error\": \"Usuario no encontrado.\" }"
+            }
+          ]
+        },
+        {
+          "name": "[ATAQUE] Login con credenciales incorrectas",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"faker@riftcampus.com\",\n  \"contrasena\": \"contrasena_incorrecta\"\n}"
+            }
+          },
+          "response": [
+            {
+              "name": "401 Unauthorized - Credenciales incorrectas",
+              "status": "Unauthorized",
+              "code": 401,
+              "body": "{ \"error\": \"Credenciales incorrectas.\" }"
+            }
+          ]
+        },
+        {
+          "name": "[ATAQUE] Swipe con JSON malformado",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/swipe",
+            "header": [
+              { "key": "Content-Type",  "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"id_swiped\": 2 }"
+            }
+          },
+          "response": [
+            {
+              "name": "400 Bad Request - Falta campo accion",
+              "status": "Bad Request",
+              "code": 400,
               "body": "{ \"error\": \"id_swiped y accion son obligatorios.\" }"
             }
           ]
@@ -257,7 +575,8 @@
           "response": [
             {
               "name": "200 OK",
-              "status": "OK", "code": 200,
+              "status": "OK",
+              "code": 200,
               "body": "{ \"status\": \"ok\" }"
             }
           ]
