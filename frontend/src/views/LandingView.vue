@@ -4,14 +4,14 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-// Ranking preview estático (en producción conectar al backend)
+
 const topPlayers = ref([
   { pos: 1, summoner: 'NightbladeX', rango: 'Challenger', puntos: 1240, avatar: null },
   { pos: 2, summoner: 'SolarisMid',  rango: 'Gran Maestro', puntos: 980, avatar: null },
   { pos: 3, summoner: 'VoidHunter',  rango: 'Maestro',    puntos: 870, avatar: null },
 ])
 
-// Partículas del hero
+
 const particulas = ref([])
 onMounted(() => {
   particulas.value = Array.from({ length: 18 }, (_, i) => ({
@@ -37,7 +37,7 @@ const features = [
   },
   {
     icon: '🛡',
-    titulo: 'Equipos universitarios',
+    titulo: 'Equipos',
     desc: 'Formá o sumate a un equipo de hasta 5 jugadores y representá tu facultad en torneos.',
   },
   {
@@ -61,7 +61,7 @@ const pasos = [
     <nav class="nav">
       <div class="nav-logo">
         <span class="nav-logo-icon">⚔</span>
-        <span class="nav-logo-text">RiftCampus</span>
+        <span class="nav-logo-text">RiftMatch</span>
       </div>
       <div class="nav-actions">
         <router-link to="/login" class="btn-ghost">Iniciar sesión</router-link>
@@ -95,14 +95,14 @@ const pasos = [
       <div class="hero-content">
         <!-- Texto -->
         <div class="hero-text">
-          <div class="hero-eyebrow">🎓 Para jugadores universitarios</div>
+          <div class="hero-eyebrow">🎓 Para jugadores de League of Legends</div>
           <h1 class="hero-titulo">
             Encontrá tu<br />
             <span class="hero-titulo-gold">equipo ideal</span><br />
-            en la Rift
+            Con solo un LIKE!
           </h1>
           <p class="hero-desc">
-            RiftCampus conecta estudiantes que juegan League of Legends
+            RiftMatch conecta estudiantes que juegan League of Legends
             según rango, roles y disponibilidad horaria. Sin matchmaking aleatorio,
             con compañeros que realmente te complementan.
           </p>
@@ -137,7 +137,7 @@ const pasos = [
           <div class="mockup-phone">
             <!-- Header de la app -->
             <div class="mockup-header">
-              <span class="mockup-logo">⚔ RiftCampus</span>
+              <span class="mockup-logo">⚔ RiftMatch</span>
             </div>
 
             <!-- Card de swipe -->
@@ -244,7 +244,7 @@ const pasos = [
     <section class="section ranking-section">
       <div class="section-inner">
         <div class="section-label">Comunidad</div>
-        <h2 class="section-titulo">Los mejores jugadores de RiftCampus</h2>
+        <h2 class="section-titulo">Los mejores jugadores de RiftMatch</h2>
 
         <div class="ranking-preview">
           <div
@@ -279,7 +279,7 @@ const pasos = [
         <h2 class="cta-titulo">¿Listo para encontrar tu equipo?</h2>
         <p class="cta-desc">
           Creá tu perfil en menos de 2 minutos y empezá a conectar con
-          jugadores universitarios que encajan con tu estilo de juego.
+          jugadores que encajan con tu estilo de juego.
         </p>
         <router-link to="/register" class="btn-primary-lg">
           Crear cuenta gratis
@@ -291,7 +291,7 @@ const pasos = [
     <footer class="footer">
       <div class="footer-logo">
         <span>⚔</span>
-        <span>RiftCampus</span>
+        <span>RiftMatch</span>
       </div>
       <p class="footer-copy">
         Proyecto académico · Prácticas Profesionalizantes 2026

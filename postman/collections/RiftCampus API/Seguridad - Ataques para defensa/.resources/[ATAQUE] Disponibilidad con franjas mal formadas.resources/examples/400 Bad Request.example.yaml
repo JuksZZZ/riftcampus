@@ -1,0 +1,17 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/disponibilidad"
+  method: PUT
+  headers:
+    Content-Type: application/json
+    Authorization: Bearer {{token}}
+  body:
+    type: text
+    content: '{ "franjas": "esto no es un array" }'
+response:
+  statusCode: 400
+  statusText: Bad Request
+  body:
+    type: text
+    content: '{ "error": "El campo \"franjas\" debe ser un array." }'
+order: 1000

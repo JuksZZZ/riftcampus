@@ -1,0 +1,39 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/matches?page=1&limit=10"
+  method: GET
+  headers:
+    Authorization: Bearer {{token}}
+  queryParams:
+    page: "1"
+    limit: "10"
+response:
+  statusCode: 200
+  statusText: OK
+  body:
+    type: text
+    content: |-
+      {
+        "matches": [
+          {
+            "id_match": 1,
+            "compatibilidad": 78,
+            "fecha": "2026-06-20T18:30:00.000Z",
+            "estado": "activo",
+            "id_otro": 3,
+            "nombre": "Caps",
+            "summoner_name": "Caps EU",
+            "rango": "diamante",
+            "roles_preferidos": ["mid", "top"],
+            "avatar_url": "/uploads/avatars/avatar-3.png",
+            "objetivo": "rankear"
+          }
+        ],
+        "paginacion": {
+          "total": 5,
+          "pagina_actual": 1,
+          "paginas_totales": 1,
+          "por_pagina": 10
+        }
+      }
+order: 1000

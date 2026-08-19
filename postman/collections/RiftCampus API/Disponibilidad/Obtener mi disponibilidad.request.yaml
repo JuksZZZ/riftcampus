@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{base_url}}/api/disponibilidad"
+method: GET
+headers:
+  Authorization: Bearer {{token}}
+examples: ./.resources/Obtener mi disponibilidad.resources/examples
+order: 1000

@@ -1,0 +1,47 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/leaderboard?page=1&limit=10"
+  method: GET
+  headers:
+    Authorization: Bearer {{token}}
+  queryParams:
+    page: "1"
+    limit: "10"
+response:
+  statusCode: 200
+  statusText: OK
+  body:
+    type: text
+    content: |-
+      {
+        "ranking": [
+          {
+            "posicion": 1,
+            "id_usuario": 5,
+            "nombre": "Faker",
+            "summoner_name": "Faker KR",
+            "rango": "challenger",
+            "puntos_reputacion": 1500,
+            "promedio_resenas": 4.9,
+            "partidas_jugadas": 320,
+            "roles_preferidos": ["mid"]
+          },
+          {
+            "posicion": 2,
+            "id_usuario": 3,
+            "nombre": "Caps",
+            "summoner_name": "Caps EU",
+            "rango": "gran_maestro",
+            "puntos_reputacion": 1200,
+            "promedio_resenas": 4.7,
+            "partidas_jugadas": 210
+          }
+        ],
+        "paginacion": {
+          "total": 42,
+          "pagina_actual": 1,
+          "paginas_totales": 5,
+          "por_pagina": 10
+        }
+      }
+order: 1000

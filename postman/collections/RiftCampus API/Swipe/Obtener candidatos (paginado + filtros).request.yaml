@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{base_url}}/api/swipe/candidatos?page=1&limit=10"
+method: GET
+headers:
+  Authorization: Bearer {{token}}
+queryParams:
+  - key: page
+    value: "1"
+  - key: limit
+    value: "10"
+  - key: rango
+    value: oro
+    disabled: true
+  - key: rol
+    value: mid
+    disabled: true
+  - key: objetivo
+    value: competitivo
+    disabled: true
+examples: ./.resources/Obtener candidatos (paginado + filtros).resources/examples
+order: 1000

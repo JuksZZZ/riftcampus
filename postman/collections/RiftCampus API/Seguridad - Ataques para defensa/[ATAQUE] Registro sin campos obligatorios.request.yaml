@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{base_url}}/api/auth/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: '{ "email": "test@test.com" }'
+examples: ./.resources/[ATAQUE] Registro sin campos obligatorios.resources/examples
+order: 6000

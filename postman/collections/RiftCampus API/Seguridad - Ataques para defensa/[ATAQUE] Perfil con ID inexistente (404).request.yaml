@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{base_url}}/api/perfil/99999"
+method: GET
+headers:
+  Authorization: Bearer {{token}}
+examples: ./.resources/[ATAQUE] Perfil con ID inexistente (404).resources/examples
+order: 3000

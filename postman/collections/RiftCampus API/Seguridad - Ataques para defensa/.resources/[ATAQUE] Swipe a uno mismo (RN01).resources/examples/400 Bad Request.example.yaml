@@ -1,0 +1,17 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/swipe"
+  method: POST
+  headers:
+    Content-Type: application/json
+    Authorization: Bearer {{token}}
+  body:
+    type: text
+    content: '{ "id_swiped": 8, "accion": "like" }'
+response:
+  statusCode: 400
+  statusText: Bad Request
+  body:
+    type: text
+    content: '{ "error": "No podés swipearte a vos mismo." }'
+order: 1000

@@ -1,0 +1,35 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/perfil"
+  method: POST
+  headers:
+    Authorization: Bearer {{token}}
+  body:
+    type: formdata
+    content:
+      - type: text
+        key: summoner_name
+        value: Faker KR
+      - type: text
+        key: rango
+        value: challenger
+      - type: text
+        key: objetivo
+        value: competitivo
+      - type: text
+        key: roles_preferidos
+        value: '["mid"]'
+      - type: text
+        key: descripcion
+        value: Main mid one-trick
+      - type: file
+        key: avatar
+        src:
+          - ""
+response:
+  statusCode: 400
+  statusText: Bad Request
+  body:
+    type: text
+    content: '{ "error": "Summoner name, rango y objetivo son obligatorios." }'
+order: 2000

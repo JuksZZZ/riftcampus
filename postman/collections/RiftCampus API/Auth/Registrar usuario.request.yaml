@@ -1,0 +1,15 @@
+$kind: http-request
+url: "{{base_url}}/api/auth/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "nombre": "Faker",
+      "email": "faker@riftcampus.com",
+      "contrasena": "123456"
+    }
+examples: ./.resources/Registrar usuario.resources/examples
+order: 1000

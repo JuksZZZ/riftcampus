@@ -1,0 +1,27 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/swipe/candidatos?page=1&limit=10"
+  method: GET
+  headers:
+    Authorization: Bearer {{token}}
+  queryParams:
+    - key: page
+      value: "1"
+    - key: limit
+      value: "10"
+    - key: rango
+      value: oro
+      disabled: true
+    - key: rol
+      value: mid
+      disabled: true
+    - key: objetivo
+      value: competitivo
+      disabled: true
+response:
+  statusCode: 400
+  statusText: Bad Request
+  body:
+    type: text
+    content: '{ "error": "Completá tu perfil antes de explorar." }'
+order: 2000

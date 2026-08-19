@@ -1,0 +1,5 @@
+$kind: http-request
+url: "{{base_url}}/api/matches"
+method: GET
+examples: ./.resources/[ATAQUE] Matches sin token.resources/examples
+order: 14000

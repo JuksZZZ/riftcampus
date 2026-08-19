@@ -78,7 +78,7 @@ function fechaRelativa(fecha) {
           </div>
           <div class="mcard-footer">
             <span class="mcard-fecha">{{ fechaRelativa(m.fecha) }}</span>
-            <a href="https://discord.com" target="_blank" class="btn-discord">💬 Contactar</a>
+            <a href="https://discord.gg/xmAZumY8Mw" target="_blank" class="btn-discord">💬 Contactar</a>
           </div>
         </div>
       </div>

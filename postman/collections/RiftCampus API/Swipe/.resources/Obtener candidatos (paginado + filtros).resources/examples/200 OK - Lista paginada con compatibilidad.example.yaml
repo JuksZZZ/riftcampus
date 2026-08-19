@@ -1,0 +1,45 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/swipe/candidatos?page=1&limit=10"
+  method: GET
+  headers:
+    Authorization: Bearer {{token}}
+  queryParams:
+    - key: page
+      value: "1"
+    - key: limit
+      value: "10"
+    - key: rango
+      value: oro
+      disabled: true
+    - key: rol
+      value: mid
+      disabled: true
+    - key: objetivo
+      value: competitivo
+      disabled: true
+response:
+  statusCode: 200
+  statusText: OK
+  body:
+    type: text
+    content: |-
+      {
+        "candidatos": [
+          {
+            "id_usuario": 2,
+            "summoner_name": "Caps EU",
+            "rango": "diamante",
+            "roles_preferidos": ["mid", "top"],
+            "objetivo": "rankear",
+            "compatibilidad": 78
+          }
+        ],
+        "paginacion": {
+          "total": 24,
+          "pagina_actual": 1,
+          "paginas_totales": 3,
+          "por_pagina": 10
+        }
+      }
+order: 1000

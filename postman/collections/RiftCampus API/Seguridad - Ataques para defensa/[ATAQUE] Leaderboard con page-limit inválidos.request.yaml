@@ -1,0 +1,11 @@
+$kind: http-request
+name: "[ATAQUE] Leaderboard con page/limit inválidos"
+url: "{{base_url}}/api/leaderboard?page=-5&limit=abc"
+method: GET
+headers:
+  Authorization: Bearer {{token}}
+queryParams:
+  page: "-5"
+  limit: abc
+examples: ./.resources/[ATAQUE] Leaderboard con page-limit inválidos.resources/examples
+order: 15000

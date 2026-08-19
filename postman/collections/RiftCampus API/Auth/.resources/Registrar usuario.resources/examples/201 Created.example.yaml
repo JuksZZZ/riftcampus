@@ -1,0 +1,31 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/auth/register"
+  method: POST
+  headers:
+    Content-Type: application/json
+  body:
+    type: text
+    content: |-
+      {
+        "nombre": "Faker",
+        "email": "faker@riftcampus.com",
+        "contrasena": "123456"
+      }
+response:
+  statusCode: 201
+  statusText: Created
+  body:
+    type: text
+    content: |-
+      {
+        "message": "Usuario registrado exitosamente.",
+        "token": "<jwt>",
+        "user": {
+          "id_usuario": 1,
+          "nombre": "Faker",
+          "email": "faker@riftcampus.com",
+          "rol_usuario": "usuario"
+        }
+      }
+order: 1000

@@ -1,0 +1,18 @@
+$kind: http-request
+url: "{{base_url}}/api/disponibilidad"
+method: PUT
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+body:
+  type: text
+  content: |-
+    {
+      "franjas": [
+        { "dia": "lun", "hora_inicio": "18:00", "hora_fin": "22:00" },
+        { "dia": "mie", "hora_inicio": "20:00", "hora_fin": "23:00" },
+        { "dia": "sab", "hora_inicio": "14:00", "hora_fin": "20:00" }
+      ]
+    }
+examples: ./.resources/Guardar disponibilidad.resources/examples
+order: 3000

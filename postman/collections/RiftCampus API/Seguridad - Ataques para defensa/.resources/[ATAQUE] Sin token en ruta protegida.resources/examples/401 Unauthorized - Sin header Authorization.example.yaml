@@ -1,0 +1,11 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/perfil"
+  method: GET
+response:
+  statusCode: 401
+  statusText: Unauthorized
+  body:
+    type: text
+    content: '{ "error": "Token no proporcionado." }'
+order: 1000

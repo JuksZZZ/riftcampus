@@ -1,0 +1,14 @@
+$kind: http-request
+url: "{{base_url}}/api/auth/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "email": "faker@riftcampus.com",
+      "contrasena": "contrasena_incorrecta"
+    }
+examples: ./.resources/[ATAQUE] Login con credenciales incorrectas.resources/examples
+order: 4000

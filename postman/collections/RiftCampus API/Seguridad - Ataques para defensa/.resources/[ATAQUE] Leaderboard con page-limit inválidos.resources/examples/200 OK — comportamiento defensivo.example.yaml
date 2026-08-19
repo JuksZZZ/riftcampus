@@ -1,0 +1,16 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/leaderboard?page=-5&limit=abc"
+  method: GET
+  headers:
+    Authorization: Bearer {{token}}
+  queryParams:
+    page: "-5"
+    limit: abc
+response:
+  statusCode: 200
+  statusText: OK — comportamiento defensivo
+  body:
+    type: text
+    content: '{ "nota": "page y limit se clampean en el service (Math.max/Math.min), así que valores inválidos caen a los defaults (page=1, limit=10) en vez de romper. Bueno para explicar como buena práctica." }'
+order: 1000

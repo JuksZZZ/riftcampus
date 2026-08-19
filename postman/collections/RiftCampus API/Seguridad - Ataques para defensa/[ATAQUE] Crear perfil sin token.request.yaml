@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{base_url}}/api/perfil"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: '{ "summoner_name": "TestPlayer" }'
+examples: ./.resources/[ATAQUE] Crear perfil sin token.resources/examples
+order: 9000

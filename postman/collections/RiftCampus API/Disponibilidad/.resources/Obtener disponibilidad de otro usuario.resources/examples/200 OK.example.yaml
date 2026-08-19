@@ -1,0 +1,18 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/disponibilidad/2"
+  method: GET
+  headers:
+    Authorization: Bearer {{token}}
+response:
+  statusCode: 200
+  statusText: OK
+  body:
+    type: text
+    content: |-
+      {
+        "disponibilidad": [
+          { "id_disponibilidad": 4, "dia": "vie", "hora_inicio": "19:00:00", "hora_fin": "23:00:00" }
+        ]
+      }
+order: 1000

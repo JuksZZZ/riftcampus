@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{base_url}}/api/auth/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: '{ "nombre": "Test", "email": "no-es-un-email", "contrasena": "123456" }'
+examples: ./.resources/[ATAQUE] Registro con email inválido.resources/examples
+order: 8000

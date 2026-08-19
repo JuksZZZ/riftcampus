@@ -92,6 +92,15 @@ export async function registrarSwipe(swiperId, idSwiped, accion) {
     throw err
   }
 
+  const [usuarioExiste] = await pool.query(
+    'SELECT id_usuario FROM usuarios WHERE id_usuario = ?', [idSwiped]
+  )
+  if (!usuarioExiste[0]) {
+    const err = new Error('El usuario que intentás swipear no existe.')
+    err.status = 404
+    throw err
+  }
+
   await pool.query(
     'INSERT IGNORE INTO swipe (id_swiper, id_swiped, accion) VALUES (?, ?, ?)',
     [swiperId, idSwiped, accion]

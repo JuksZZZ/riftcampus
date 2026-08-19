@@ -1,0 +1,10 @@
+$kind: http-request
+url: "{{base_url}}/api/auth/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: '{ "nombre": "Test", "email": "test2@test.com", "contrasena": "123" }'
+examples: ./.resources/[ATAQUE] Registro con contraseña corta.resources/examples
+order: 7000

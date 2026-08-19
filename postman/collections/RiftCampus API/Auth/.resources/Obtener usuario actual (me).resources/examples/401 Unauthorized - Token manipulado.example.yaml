@@ -1,0 +1,13 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/auth/me"
+  method: GET
+  headers:
+    Authorization: Bearer {{token}}
+response:
+  statusCode: 401
+  statusText: Unauthorized
+  body:
+    type: text
+    content: '{ "error": "Token inválido o expirado." }'
+order: 3000

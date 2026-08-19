@@ -1,0 +1,21 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/auth/register"
+  method: POST
+  headers:
+    Content-Type: application/json
+  body:
+    type: text
+    content: |-
+      {
+        "nombre": "Faker",
+        "email": "faker@riftcampus.com",
+        "contrasena": "123456"
+      }
+response:
+  statusCode: 409
+  statusText: Conflict
+  body:
+    type: text
+    content: '{ "error": "Ya existe una cuenta con ese email." }'
+order: 3000

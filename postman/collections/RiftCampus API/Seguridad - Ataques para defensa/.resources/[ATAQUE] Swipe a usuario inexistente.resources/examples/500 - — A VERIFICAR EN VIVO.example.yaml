@@ -1,0 +1,18 @@
+$kind: http-example
+name: 500 ?? — A VERIFICAR EN VIVO
+request:
+  url: "{{base_url}}/api/swipe"
+  method: POST
+  headers:
+    Content-Type: application/json
+    Authorization: Bearer {{token}}
+  body:
+    type: text
+    content: '{ "id_swiped": 999999, "accion": "like" }'
+response:
+  statusCode: 500
+  statusText: ?? — A VERIFICAR EN VIVO
+  body:
+    type: text
+    content: '{ "nota": "No hay validación explícita de que id_swiped exista. Probar antes de la defensa: puede tirar 500 si hay FK en la tabla swipe, o insertar silenciosamente si no la hay." }'
+order: 1000

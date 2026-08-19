@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{base_url}}/api/perfil"
+method: GET
+headers:
+  Authorization: Bearer {{token}}
+examples: ./.resources/Obtener mi perfil.resources/examples
+order: 1000

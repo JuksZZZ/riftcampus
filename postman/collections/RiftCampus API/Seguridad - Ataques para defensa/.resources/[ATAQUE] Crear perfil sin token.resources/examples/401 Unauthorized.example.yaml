@@ -1,0 +1,16 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/perfil"
+  method: POST
+  headers:
+    Content-Type: application/json
+  body:
+    type: text
+    content: '{ "summoner_name": "TestPlayer" }'
+response:
+  statusCode: 401
+  statusText: Unauthorized
+  body:
+    type: text
+    content: '{ "error": "Token no proporcionado." }'
+order: 1000

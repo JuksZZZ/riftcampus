@@ -1,0 +1,32 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/disponibilidad"
+  method: PUT
+  headers:
+    Content-Type: application/json
+    Authorization: Bearer {{token}}
+  body:
+    type: text
+    content: |-
+      {
+        "franjas": [
+          { "dia": "lun", "hora_inicio": "18:00", "hora_fin": "22:00" },
+          { "dia": "mie", "hora_inicio": "20:00", "hora_fin": "23:00" },
+          { "dia": "sab", "hora_inicio": "14:00", "hora_fin": "20:00" }
+        ]
+      }
+response:
+  statusCode: 200
+  statusText: OK
+  body:
+    type: text
+    content: |-
+      {
+        "message": "Disponibilidad guardada correctamente.",
+        "disponibilidad": [
+          { "id_disponibilidad": 1, "dia": "lun", "hora_inicio": "18:00:00", "hora_fin": "22:00:00" },
+          { "id_disponibilidad": 2, "dia": "mie", "hora_inicio": "20:00:00", "hora_fin": "23:00:00" },
+          { "id_disponibilidad": 3, "dia": "sab", "hora_inicio": "14:00:00", "hora_fin": "20:00:00" }
+        ]
+      }
+order: 1000

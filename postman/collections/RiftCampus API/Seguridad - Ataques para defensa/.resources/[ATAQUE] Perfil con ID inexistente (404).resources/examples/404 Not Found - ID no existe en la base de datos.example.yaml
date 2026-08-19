@@ -1,0 +1,13 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/perfil/99999"
+  method: GET
+  headers:
+    Authorization: Bearer {{token}}
+response:
+  statusCode: 404
+  statusText: Not Found
+  body:
+    type: text
+    content: '{ "error": "Usuario no encontrado." }'
+order: 1000

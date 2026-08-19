@@ -1,0 +1,5 @@
+$kind: http-request
+url: "{{base_url}}/api/health"
+method: GET
+examples: ./.resources/Verificar estado del servidor.resources/examples
+order: 1000

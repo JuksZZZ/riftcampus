@@ -1,0 +1,25 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/matches?page=1&limit=10"
+  method: GET
+  headers:
+    Authorization: Bearer {{token}}
+  queryParams:
+    page: "1"
+    limit: "10"
+response:
+  statusCode: 200
+  statusText: OK
+  body:
+    type: text
+    content: |-
+      {
+        "matches": [],
+        "paginacion": {
+          "total": 0,
+          "pagina_actual": 1,
+          "paginas_totales": 0,
+          "por_pagina": 10
+        }
+      }
+order: 2000

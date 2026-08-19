@@ -1,0 +1,13 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/disponibilidad"
+  method: GET
+  headers:
+    Authorization: Bearer {{token}}
+response:
+  statusCode: 401
+  statusText: Unauthorized
+  body:
+    type: text
+    content: '{ "error": "Token no proporcionado." }'
+order: 3000

@@ -1,0 +1,7 @@
+$kind: http-request
+url: "{{base_url}}/api/auth/me"
+method: GET
+headers:
+  Authorization: Bearer {{token}}
+examples: ./.resources/Obtener usuario actual (me).resources/examples
+order: 3000

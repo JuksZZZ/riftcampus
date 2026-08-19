@@ -1,0 +1,5 @@
+$kind: http-request
+url: "{{base_url}}/api/perfil"
+method: GET
+examples: ./.resources/[ATAQUE] Sin token en ruta protegida.resources/examples
+order: 1000

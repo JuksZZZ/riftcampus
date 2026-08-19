@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{base_url}}/api/swipe"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+body:
+  type: text
+  content: '{ "id_swiped": 999999, "accion": "like" }'
+examples: ./.resources/[ATAQUE] Swipe a usuario inexistente.resources/examples
+order: 12000

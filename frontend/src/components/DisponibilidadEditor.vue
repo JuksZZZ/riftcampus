@@ -2,289 +2,232 @@
 import { ref, onMounted } from 'vue'
 import api from '../services/api.js'
 
-const DIAS = [
-  { value: 'lun', label: 'Lunes'     },
-  { value: 'mar', label: 'Martes'    },
-  { value: 'mie', label: 'Miércoles' },
-  { value: 'jue', label: 'Jueves'    },
-  { value: 'vie', label: 'Viernes'   },
-  { value: 'sab', label: 'Sábado'    },
-  { value: 'dom', label: 'Domingo'   },
+
+const BLOQUES = [
+  { key: 'madrugada', label: 'Madrugada', hint: '00:00 - 06:00', hora_inicio: '00:00', hora_fin: '06:00' },
+  { key: 'manana',    label: 'Mañana',    hint: '06:00 - 12:00', hora_inicio: '06:00', hora_fin: '12:00' },
+  { key: 'tarde',     label: 'Tarde',     hint: '12:00 - 18:00', hora_inicio: '12:00', hora_fin: '18:00' },
+  { key: 'noche',     label: 'Noche',     hint: '18:00 - 23:59', hora_inicio: '18:00', hora_fin: '23:59' },
 ]
 
-const franjas  = ref([])   // [{ dia, hora_inicio, hora_fin }]
-const saving   = ref(false)
-const success  = ref('')
-const error    = ref('')
+const DIAS = [
+  { key: 'lun', label: 'Lun' },
+  { key: 'mar', label: 'Mar' },
+  { key: 'mie', label: 'Mié' },
+  { key: 'jue', label: 'Jue' },
+  { key: 'vie', label: 'Vie' },
+  { key: 'sab', label: 'Sáb' },
+  { key: 'dom', label: 'Dom' },
+]
 
-onMounted(async () => {
-  try {
-    const { data } = await api.get('/api/disponibilidad')
-    franjas.value = data.disponibilidad.map(f => ({
-      dia:         f.dia,
-      hora_inicio: f.hora_inicio.slice(0, 5),  // "HH:MM"
-      hora_fin:    f.hora_fin.slice(0, 5),
-    }))
-  } catch { /* sin disponibilidad cargada todavía */ }
-})
+const loading = ref(true)
+const saving  = ref(false)
+const error   = ref('')
+const success = ref('')
 
-function agregarFranja() {
-  franjas.value.push({ dia: 'lun', hora_inicio: '18:00', hora_fin: '22:00' })
+
+const selected = ref(
+  Object.fromEntries(DIAS.map(d => [d.key, Object.fromEntries(BLOQUES.map(b => [b.key, false]))]))
+)
+
+function toMinutos(t) {
+  const [h, m] = t.split(':').map(Number)
+  return h * 60 + m
 }
 
-function eliminarFranja(idx) {
-  franjas.value.splice(idx, 1)
+
+function matchBloque(franja) {
+  const ini = toMinutos(franja.hora_inicio)
+  const fin = toMinutos(franja.hora_fin)
+  return BLOQUES.find(b => toMinutos(b.hora_inicio) === ini && toMinutos(b.hora_fin) === fin)
+}
+
+async function cargarDisponibilidad() {
+  loading.value = true
+  try {
+    const { data } = await api.get('/api/disponibilidad')
+    for (const franja of data.disponibilidad || []) {
+      const bloque = matchBloque(franja)
+      if (bloque && selected.value[franja.dia]) {
+        selected.value[franja.dia][bloque.key] = true
+      }
+    }
+  } catch (err) {
+    error.value = 'No se pudo cargar tu disponibilidad actual.'
+  } finally {
+    loading.value = false
+  }
+}
+
+function toggle(dia, bloque) {
+  selected.value[dia][bloque] = !selected.value[dia][bloque]
 }
 
 async function guardar() {
-  error.value   = ''
-  success.value = ''
-
-  // Validación simple en frontend
-  for (const f of franjas.value) {
-    if (f.hora_inicio >= f.hora_fin) {
-      error.value = `En ${f.dia}: la hora de fin debe ser posterior a la de inicio.`
-      return
-    }
-  }
-
   saving.value = true
+  error.value = ''
+  success.value = ''
   try {
-    await api.put('/api/disponibilidad', { franjas: franjas.value })
-    success.value = '¡Disponibilidad guardada!'
+    const franjas = []
+    for (const dia of DIAS) {
+      for (const bloque of BLOQUES) {
+        if (selected.value[dia.key][bloque.key]) {
+          franjas.push({ dia: dia.key, hora_inicio: bloque.hora_inicio, hora_fin: bloque.hora_fin })
+        }
+      }
+    }
+    await api.put('/api/disponibilidad', { franjas })
+    success.value = 'Disponibilidad guardada correctamente.'
   } catch (err) {
-    error.value = err.response?.data?.error || 'Error al guardar.'
+    error.value = err.response?.data?.error || 'Error al guardar la disponibilidad.'
   } finally {
     saving.value = false
   }
 }
+
+onMounted(cargarDisponibilidad)
 </script>
 
 <template>
   <div class="disp-editor">
     <div class="disp-header">
-      <div>
-        <h3 class="disp-title">Disponibilidad horaria</h3>
-        <p class="disp-sub">Agregá los días y horarios en los que solés jugar</p>
+      <h3 class="disp-title">Disponibilidad horaria</h3>
+      <p class="disp-subtitle">Marcá los bloques en los que sueles estar disponible para jugar.</p>
+    </div>
+
+    <div v-if="loading" class="disp-loading">Cargando...</div>
+
+    <div v-else class="disp-grid">
+      <div class="disp-grid-corner"></div>
+      <div v-for="bloque in BLOQUES" :key="bloque.key" class="disp-col-header" :title="bloque.hint">
+        {{ bloque.label }}
       </div>
-      <button class="btn-agregar" @click="agregarFranja" type="button">
-        + Agregar franja
-      </button>
-    </div>
 
-    <!-- Lista de franjas -->
-    <div v-if="franjas.length === 0" class="disp-empty">
-      <span>⏰</span>
-      <p>Sin franjas cargadas. Agregá al menos una para mejorar tu compatibilidad.</p>
-    </div>
-
-    <div v-else class="franjas-lista">
-      <div
-        v-for="(franja, idx) in franjas"
-        :key="idx"
-        class="franja-row"
-      >
-        <!-- Día -->
-        <select v-model="franja.dia" class="franja-select">
-          <option v-for="d in DIAS" :key="d.value" :value="d.value">
-            {{ d.label }}
-          </option>
-        </select>
-
-        <!-- Hora inicio -->
-        <div class="franja-time">
-          <label>Desde</label>
-          <input v-model="franja.hora_inicio" type="time" class="franja-input" />
-        </div>
-
-        <!-- Hora fin -->
-        <div class="franja-time">
-          <label>Hasta</label>
-          <input v-model="franja.hora_fin" type="time" class="franja-input" />
-        </div>
-
-        <!-- Eliminar -->
-        <button class="btn-eliminar" @click="eliminarFranja(idx)" type="button" title="Eliminar">
-          ✕
+      <template v-for="dia in DIAS" :key="dia.key">
+        <div class="disp-row-header">{{ dia.label }}</div>
+        <button
+          v-for="bloque in BLOQUES"
+          :key="bloque.key"
+          type="button"
+          class="disp-cell"
+          :class="{ active: selected[dia.key][bloque.key] }"
+          @click="toggle(dia.key, bloque.key)"
+        >
+          <span v-if="selected[dia.key][bloque.key]">✓</span>
         </button>
-      </div>
+      </template>
     </div>
 
-    <!-- Feedback -->
-    <p v-if="error"   class="msg-error">{{ error }}</p>
+    <p v-if="error" class="msg-error">{{ error }}</p>
     <p v-if="success" class="msg-success">{{ success }}</p>
 
-    <!-- Guardar -->
-    <button class="btn-guardar" :disabled="saving" @click="guardar" type="button">
+    <button class="btn-save" :disabled="saving || loading" @click="guardar">
       <span v-if="saving" class="spinner" />
-      <span v-else>💾 Guardar disponibilidad</span>
+      <span v-else> Guardar disponibilidad</span>
     </button>
   </div>
 </template>
 
 <style scoped>
 .disp-editor {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  margin-top: 8px;
 }
-
 .disp-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
+  margin-bottom: 16px;
 }
-
 .disp-title {
   font-family: var(--font-display);
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--gold);
 }
-
-.disp-sub {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-top: 3px;
+.disp-subtitle {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  margin-top: 4px;
 }
-
-.btn-agregar {
-  padding: 8px 16px;
+.disp-loading {
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  padding: 12px 0;
+}
+.disp-grid {
+  display: grid;
+  grid-template-columns: 56px repeat(4, 1fr);
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.disp-grid-corner {
   background: transparent;
-  border: 1px solid var(--purple);
-  border-radius: var(--radius-sm);
-  color: var(--purple-lt);
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-  white-space: nowrap;
 }
-.btn-agregar:hover { background: var(--purple-glow); }
-
-.disp-empty {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 16px;
-  background: var(--bg-surface);
-  border: 1px dashed var(--border-dim);
-  border-radius: var(--radius-md);
-  color: var(--text-muted);
-  font-size: 13px;
-}
-.disp-empty span { font-size: 20px; }
-
-.franjas-lista {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.franja-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.franja-select,
-.franja-input {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-dim);
-  border-radius: var(--radius-sm);
-  color: var(--text-primary);
-  font-family: var(--font-body);
-  font-size: 13px;
-  padding: 8px 12px;
-  outline: none;
-  transition: border-color 0.2s;
-  cursor: pointer;
-}
-.franja-select { min-width: 120px; }
-.franja-input  { width: 120px; }
-
-.franja-select:focus,
-.franja-input:focus {
-  border-color: var(--purple);
-  box-shadow: 0 0 0 2px var(--purple-glow);
-}
-
-.franja-time {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.franja-time label {
-  font-size: 10px;
+.disp-col-header {
+  text-align: center;
+  font-size: var(--fs-xs);
   font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
+  color: var(--text-tertiary);
+  padding-bottom: 4px;
 }
-
-.btn-eliminar {
-  background: none;
-  border: none;
-  color: var(--text-muted);
+.disp-row-header {
+  display: flex;
+  align-items: center;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.disp-cell {
+  height: 40px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-dim);
+  background: var(--bg-inset);
+  color: var(--gold-lt);
   font-size: 14px;
   cursor: pointer;
-  padding: 6px;
-  border-radius: 6px;
-  transition: color 0.2s, background 0.2s;
-  margin-left: auto;
+  transition: all 0.15s var(--ease-out);
 }
-.btn-eliminar:hover {
-  color: var(--red);
-  background: rgba(228,45,41,0.1);
+.disp-cell:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
 }
-
+.disp-cell.active {
+  background: var(--purple-glow);
+  border-color: var(--purple);
+  color: var(--purple-lt);
+}
 .msg-error {
-  font-size: 13px;
-  color: var(--red);
-  background: rgba(228,45,41,0.08);
-  border: 1px solid rgba(228,45,41,0.2);
-  border-radius: var(--radius-sm);
-  padding: 10px 14px;
+  color: #e45151;
+  font-size: var(--fs-sm);
+  margin-bottom: 8px;
 }
 .msg-success {
-  font-size: 13px;
-  color: var(--green);
-  background: rgba(62,191,144,0.08);
-  border: 1px solid rgba(62,191,144,0.2);
-  border-radius: var(--radius-sm);
-  padding: 10px 14px;
+  color: #3ebf90;
+  font-size: var(--fs-sm);
+  margin-bottom: 8px;
 }
-
-.btn-guardar {
-  padding: 12px;
-  background: var(--purple);
-  color: #fff;
-  border: none;
-  border-radius: var(--radius-md);
-  font-family: var(--font-display);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
+.btn-save {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: linear-gradient(135deg, var(--purple-lt), var(--purple));
+  color: #fff;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--fs-base);
+  cursor: pointer;
+  transition: opacity 0.15s;
 }
-.btn-guardar:hover:not(:disabled) {
-  background: var(--purple-lt);
-  box-shadow: 0 4px 16px var(--purple-glow);
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
-.btn-guardar:disabled { opacity: 0.6; cursor: not-allowed; }
-
 .spinner {
-  width: 16px; height: 16px;
-  border: 2px solid rgba(255,255,255,0.3);
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.4);
   border-top-color: #fff;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;

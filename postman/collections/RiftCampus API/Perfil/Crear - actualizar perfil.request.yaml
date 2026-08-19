@@ -1,0 +1,30 @@
+$kind: http-request
+name: Crear / actualizar perfil
+url: "{{base_url}}/api/perfil"
+method: POST
+headers:
+  Authorization: Bearer {{token}}
+body:
+  type: formdata
+  content:
+    - type: text
+      key: summoner_name
+      value: Faker KR
+    - type: text
+      key: rango
+      value: challenger
+    - type: text
+      key: objetivo
+      value: competitivo
+    - type: text
+      key: roles_preferidos
+      value: '["mid"]'
+    - type: text
+      key: descripcion
+      value: Main mid one-trick
+    - type: file
+      key: avatar
+      src:
+        - ""
+examples: ./.resources/Crear - actualizar perfil.resources/examples
+order: 3000

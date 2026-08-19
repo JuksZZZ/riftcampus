@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{base_url}}/api/swipe"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+body:
+  type: text
+  content: '{ "id_swiped": 2 }'
+examples: ./.resources/[ATAQUE] Swipe con JSON malformado.resources/examples
+order: 5000

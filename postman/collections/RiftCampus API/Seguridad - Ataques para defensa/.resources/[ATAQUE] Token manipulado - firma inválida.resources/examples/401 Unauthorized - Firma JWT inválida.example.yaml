@@ -1,0 +1,13 @@
+$kind: http-example
+request:
+  url: "{{base_url}}/api/perfil"
+  method: GET
+  headers:
+    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInJvbCI6ImFkbWluIn0.FIRMA_FALSA_MANIPULADA
+response:
+  statusCode: 401
+  statusText: Unauthorized
+  body:
+    type: text
+    content: '{ "error": "Token inválido o expirado." }'
+order: 1000
