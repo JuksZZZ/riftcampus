@@ -6,9 +6,10 @@ const ROLES_VALIDOS    = ['top','jungla','mid','adc','support']
 const OBJETIVOS_VALIDOS = ['casual','rankear','competitivo']
 
 // ── Obtener perfil por userId ────────────────────────────────
-export async function getPerfilByUserId(userId) {
+export async function getPerfilByUserId(userId, {includeEmail = false} = {}
+) {
   const [rows] = await pool.query(
-    `SELECT u.id_usuario, u.nombre, u.email,
+    `SELECT u.id_usuario, u.nombre,
             p.id_perfil, p.summoner_name, p.rango,
             p.roles_preferidos, p.descripcion, p.avatar_url, p.objetivo,
             p.discord_user, p.opgg_url,
