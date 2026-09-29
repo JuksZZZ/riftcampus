@@ -1,14 +1,18 @@
 $kind: collection
 name: RiftCampus API
 description: |-
-  Colección completa de endpoints del backend de RiftCampus.
-  Base URL: http://localhost:3000
+  Colección completa de endpoints del backend de RiftCampus.  
+  Base URL: [http://localhost:3000](http://localhost:3000)
 
   Para usar endpoints protegidos:
+
   1. Ejecutá POST /api/auth/login
+      
   2. Copiá el token de la respuesta
-  3. En cada request protegido, agregá el header:
-     Authorization: Bearer <token>
+      
+  3. En cada request protegido, agregá el header:  
+      Authorization: Bearer
+      
 
   Para la defensa: simular ataque de token editando manualmente el valor de {{token}}.
 variables:

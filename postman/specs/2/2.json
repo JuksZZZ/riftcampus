@@ -1,0 +1,449 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "2",
+    "version": "1.0.0",
+    "description": "Colección completa de endpoints del backend de RiftCampus.\nBase URL: http://localhost:3000\n\nPara usar endpoints protegidos:\n1. Ejecutá POST /api/auth/login\n2. Copiá el token de la respuesta\n3. En cada request protegido, agregá el header:\n   Authorization: Bearer <token>\n\nPara la defensa: simular ataque de token editando manualmente el valor de {{token}}."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "summary": "Registrar usuario",
+        "responses": {
+          "201": {
+            "description": "201 Created"
+          },
+          "400": {
+            "description": "400 Bad Request - Campos faltantes"
+          },
+          "409": {
+            "description": "409 Conflict - Email duplicado"
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "summary": "Iniciar sesión",
+        "responses": {
+          "200": {
+            "description": "200 OK"
+          },
+          "400": {
+            "description": "400 Bad Request - Campos faltantes"
+          },
+          "401": {
+            "description": "401 Unauthorized - Credenciales incorrectas"
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "summary": "Obtener usuario actual (me)",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer {{token}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 OK"
+          },
+          "401": {
+            "description": "401 Unauthorized - Sin token"
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/perfil": {
+      "get": {
+        "summary": "Obtener mi perfil",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer {{token}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 OK"
+          },
+          "401": {
+            "description": "401 Unauthorized - Sin token"
+          }
+        },
+        "tags": [
+          "Perfil"
+        ]
+      },
+      "post": {
+        "summary": "Crear / actualizar perfil",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer {{token}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 OK"
+          },
+          "400": {
+            "description": "400 Bad Request - Campos obligatorios faltantes"
+          }
+        },
+        "tags": [
+          "Perfil"
+        ]
+      }
+    },
+    "/api/perfil/1": {
+      "get": {
+        "summary": "Obtener perfil por ID",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer {{token}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 OK"
+          },
+          "404": {
+            "description": "404 Not Found - ID inexistente"
+          }
+        },
+        "tags": [
+          "Perfil"
+        ]
+      }
+    },
+    "/api/swipe/candidatos": {
+      "get": {
+        "summary": "Obtener candidatos (paginado + filtros)",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 10
+          },
+          {
+            "name": "rango",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "oro"
+          },
+          {
+            "name": "rol",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "mid"
+          },
+          {
+            "name": "objetivo",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "competitivo"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer {{token}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 OK - Lista paginada con compatibilidad"
+          },
+          "400": {
+            "description": "400 Bad Request - Sin perfil completado"
+          },
+          "401": {
+            "description": "401 Unauthorized - Sin token"
+          }
+        },
+        "tags": [
+          "Swipe"
+        ]
+      }
+    },
+    "/api/swipe": {
+      "post": {
+        "summary": "Registrar swipe (like/dislike)",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer {{token}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 OK - Sin match todavía"
+          },
+          "400": {
+            "description": "400 Bad Request - Campos faltantes"
+          }
+        },
+        "tags": [
+          "Swipe"
+        ]
+      }
+    },
+    "/api/matches": {
+      "get": {
+        "summary": "Listar mis matches (paginado)",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 10
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer {{token}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 OK - Lista paginada de matches"
+          },
+          "401": {
+            "description": "401 Unauthorized - Sin token"
+          }
+        },
+        "tags": [
+          "Matches"
+        ]
+      }
+    },
+    "/api/leaderboard": {
+      "get": {
+        "summary": "Obtener ranking (paginado)",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 10
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer {{token}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 OK - Tabla de ranking con posición"
+          },
+          "401": {
+            "description": "401 Unauthorized - Sin token"
+          }
+        },
+        "tags": [
+          "Leaderboard"
+        ]
+      }
+    },
+    "/api/disponibilidad": {
+      "get": {
+        "summary": "Obtener mi disponibilidad",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer {{token}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 OK - Franjas horarias del usuario"
+          },
+          "401": {
+            "description": "401 Unauthorized - Sin token"
+          }
+        },
+        "tags": [
+          "Disponibilidad"
+        ]
+      },
+      "put": {
+        "summary": "Guardar disponibilidad",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer {{token}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 OK - Disponibilidad guardada"
+          },
+          "400": {
+            "description": "400 Bad Request - Franjas no es array"
+          },
+          "401": {
+            "description": "401 Unauthorized - Sin token"
+          }
+        },
+        "tags": [
+          "Disponibilidad"
+        ]
+      }
+    },
+    "/api/disponibilidad/2": {
+      "get": {
+        "summary": "Obtener disponibilidad de otro usuario",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer {{token}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200 OK"
+          },
+          "401": {
+            "description": "401 Unauthorized - Sin token"
+          }
+        },
+        "tags": [
+          "Disponibilidad"
+        ]
+      }
+    },
+    "/api/perfil/99999": {
+      "get": {
+        "summary": "[ATAQUE] Perfil con ID inexistente (404)",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Bearer {{token}}"
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "404 Not Found - ID no existe en la base de datos"
+          }
+        },
+        "tags": [
+          "Seguridad - Ataques para defensa"
+        ]
+      }
+    },
+    "/api/health": {
+      "get": {
+        "summary": "Verificar estado del servidor",
+        "responses": {
+          "200": {
+            "description": "200 OK"
+          }
+        },
+        "tags": [
+          "Health Check"
+        ]
+      }
+    }
+  }
+}

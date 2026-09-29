@@ -11,6 +11,7 @@ export async function getPerfilByUserId(userId) {
     `SELECT u.id_usuario, u.nombre, u.email,
             p.id_perfil, p.summoner_name, p.rango,
             p.roles_preferidos, p.descripcion, p.avatar_url, p.objetivo,
+            p.discord_user, p.opgg_url,
             tr.puntos_reputacion, tr.promedio_resenas, tr.partidas_jugadas
      FROM   usuarios u
      LEFT JOIN perfil p ON p.id_usuario = u.id_usuario
@@ -33,7 +34,7 @@ export async function getPerfilByUserId(userId) {
 
 // ── Crear o actualizar perfil ────────────────────────────────
 export async function upsertPerfil(userId, datos, archivoAvatar) {
-  const { summoner_name, rango, objetivo, descripcion, avatar_url_actual } = datos
+  const { summoner_name, rango, objetivo, descripcion, avatar_url_actual, discord_user, opgg_url } = datos
 
   // Validar campos obligatorios
   if (!summoner_name || !rango || !objetivo) {
@@ -48,6 +49,17 @@ export async function upsertPerfil(userId, datos, archivoAvatar) {
   }
   if (!OBJETIVOS_VALIDOS.includes(objetivo)) {
     const err = new Error('Objetivo inválido.')
+    err.status = 400
+    throw err
+  }
+  // discord_user y opgg_url son opcionales, pero si vienen se validan
+  if (discord_user && (discord_user.length < 2 || discord_user.length > 80)) {
+    const err = new Error('El usuario de Discord debe tener entre 2 y 80 caracteres.')
+    err.status = 400
+    throw err
+  }
+  if (opgg_url && !/^https?:\/\/.+\.op\.gg\/.+/i.test(opgg_url)) {
+    const err = new Error('opgg_url debe ser un link válido de op.gg.')
     err.status = 400
     throw err
   }
@@ -93,15 +105,18 @@ export async function upsertPerfil(userId, datos, archivoAvatar) {
   if (existing.length > 0) {
     await pool.query(
       `UPDATE perfil
-       SET summoner_name=?, rango=?, roles_preferidos=?, descripcion=?, avatar_url=?, objetivo=?
+       SET summoner_name=?, rango=?, roles_preferidos=?, descripcion=?, avatar_url=?, objetivo=?,
+           discord_user=?, opgg_url=?
        WHERE id_usuario=?`,
-      [summoner_name, rango, JSON.stringify(roles), descripcion || null, avatarUrl, objetivo, userId]
+      [summoner_name, rango, JSON.stringify(roles), descripcion || null, avatarUrl, objetivo,
+       discord_user || null, opgg_url || null, userId]
     )
   } else {
     await pool.query(
-      `INSERT INTO perfil (id_usuario, summoner_name, rango, roles_preferidos, descripcion, avatar_url, objetivo)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [userId, summoner_name, rango, JSON.stringify(roles), descripcion || null, avatarUrl, objetivo]
+      `INSERT INTO perfil (id_usuario, summoner_name, rango, roles_preferidos, descripcion, avatar_url, objetivo, discord_user, opgg_url)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [userId, summoner_name, rango, JSON.stringify(roles), descripcion || null, avatarUrl, objetivo,
+       discord_user || null, opgg_url || null]
     )
   }
 

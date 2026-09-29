@@ -1,13 +1,22 @@
-# Use this workspace to collaborate
 workspace:
   id: b4117690-ccf6-4a3c-87ef-14e0050aa759
-
 localResources:
   collections:
     - ../backend/RiftCampus.postman_collection.json
-
-# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
-
+  specs:
+    - ../postman/specs/2/2.json
 cloudResources:
   collections:
-    ../postman/collections/RiftCampus API: 50884f14-5d36-4353-89f2-f7fddabb2a67
+    ../postman/collections/RiftCampus API: 55991419-ecc05e84-20bd-4ca5-9b7b-ab550ee42e83
+    ../backend/RiftCampus.postman_collection.json: 55991419-5a483f15-5c87-4e05-80b8-8dc53f7fc527
+  environments:
+    ../postman/environments/RC envirorment.environment.yaml: 55991419-1f8e67bb-64ca-49db-beb2-5a789c59bd4f
+  specs:
+    ../postman/specs/2/2.json: 5b6035af-ab7a-4278-a4ac-8dc7f5c6aa3c
+  documents:
+    ../postman/documents/New Document.md: d0ba7249-7355-447e-991c-be741dcef955
+  globals:
+    ../postman/globals/workspace.globals.yaml: ff95b7d5-dff2-4617-855d-aea4424ec4d8
+resourceNameMappings:
+  specs:
+    - ../postman/specs/2/2.json: "2"
